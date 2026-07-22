@@ -4,6 +4,8 @@ My personal Hyprland dotfiles for Arch Linux (not Void, there is no Hyprland xD)
 ## 📸 Screenshots
 
 
+![Desktop Overview](assets/Desktop_Overview.png)
+![Terminal & Fastfetch & Wofi](assets/Terminal_and_Wofi_and_Fastfetch.png)
 
 ## 🛠️ Details
 - OS: Arch Linux
