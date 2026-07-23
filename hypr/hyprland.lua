@@ -1,7 +1,3 @@
--- #######################################################################################
--- ПЕРЕВЕДЕННЫЙ КОНФИГ ПО ОФИЦИАЛЬНОМУ СТАНДАРТУ LUA API (HYPRLAND 0.55+)
--- #######################################################################################
-
 ------------------
 ---- MONITORS ----
 ------------------
@@ -94,14 +90,14 @@ hl.config({
     },
 })
 
--- Настройка кривых Безье из вашего конфига
+-- Setting up Bézier curves from your config 
 hl.curve("easeOutQuint",   { type = "bezier", points = { {0.23, 1},    {0.32, 1}    } })
 hl.curve("easeInOutCubic", { type = "bezier", points = { {0.65, 0.05}, {0.36, 1}    } })
 hl.curve("linear",         { type = "bezier", points = { {0, 0},       {1, 1}       } })
 hl.curve("almostLinear",   { type = "bezier", points = { {0.5, 0.5},   {0.75, 1}    } })
 hl.curve("quick",          { type = "bezier", points = { {0.15, 0},    {0.1, 1}     } })
 
--- Регистрация анимаций
+-- Animation Registration 
 hl.animation({ leaf = "global",        enabled = true,  speed = 10,   bezier = "default" })
 hl.animation({ leaf = "border",        enabled = true,  speed = 5.39, bezier = "easeOutQuint" })
 hl.animation({ leaf = "windows",       enabled = true,  speed = 4.79, bezier = "easeOutQuint" })
@@ -155,7 +151,7 @@ hl.config({
     },
 })
 
--- Настройка конкретной мыши
+-- Setting up a specific mouse 
 hl.device({
     name        = "epic-mouse-v1",
     sensitivity = -0.5,
@@ -168,7 +164,7 @@ hl.device({
 
 local mainMod = "SUPER"
 
--- Системные бинды и запуск софта
+-- System binds and software launch
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("wlogout"))
 hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + C", hl.dsp.window.close())
@@ -179,35 +175,35 @@ hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 
--- Скриншот (Копирует в буфер обмена и сохраняет в Pictures)
+-- Screenshot (Copies to clipboard and saves to Pictures) 
 hl.bind(mainMod .. " + I", hl.dsp.exec_cmd('grim -g "$(slurp)" - | tee ~/Pictures/screenshot-$(date +\'%Y-%m-%d_%H-%M\')-$(tr -dc A-Za-z0-9 </dev/urandom | head -c 6).png | wl-copy'))
 
--- Фокус стрелками
+-- Focus with arrows 
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
 hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
 hl.bind(mainMod .. " + up",    hl.dsp.focus({ direction = "up" }))
 hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }))
 
--- Воркспейсы 1-10 (Переключение и перенос окон)
+-- Workspaces 1-10 (Switching and Moving Windows) 
 for i = 1, 10 do
     local key = i % 10
     hl.bind(mainMod .. " + " .. key,         hl.dsp.focus({ workspace = i }))
     hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
 end
 
--- Скретчпад (Специальный воркспейс)
+-- Scratchpad (Special Workspace) 
 hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("magic"))
 hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
 
--- Переключение воркспейсов колесом мыши
+-- Switching workspaces with the mouse wheel 
 hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
 
--- Мышь (Таскание и ресайз окон)
+-- Mouse (Dragging and resizing windows) 
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
--- Аудио и Яркость (с флагами locked и repeating)
+-- Audio and Brightness (with locked and repeating flags) 
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),      { locked = true, repeating = true })
 hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),     { locked = true, repeating = true })
@@ -215,7 +211,7 @@ hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_S
 hl.bind("XF86MonBrightnessUp",  hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+"),                  { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%-"),                  { locked = true, repeating = true })
 
--- Управление плеером
+-- Player Control 
 hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("playerctl next"),       { locked = true })
 hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
@@ -226,7 +222,6 @@ hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = tr
 ---- WINDOWS AND WORKSPACES ----
 --------------------------------
 
--- Полезные дефолтные правила для окон
 hl.window_rule({
     name  = "suppress-maximize-events",
     match = { class = ".*" },
