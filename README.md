@@ -19,3 +19,5 @@ My personal Hyprland dotfiles for Arch Linux (not Void, there is no Hyprland xD)
 ## 🎨 Theme & Wallpaper
 
 Wallpaper is included in the wallpapers/ directory.
+
+*Hey people, who wants to play Mindustry?*
