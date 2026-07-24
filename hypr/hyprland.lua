@@ -4,7 +4,7 @@
 
 hl.monitor({
 	output = "HDMI-A-2",
-	mode = "1820x1080@60",
+	mode = "1920x1080@60",
 	position = "0x0",
 	cm = "srgb",
 	scale = 1,
