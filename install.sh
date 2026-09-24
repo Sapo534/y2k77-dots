@@ -34,21 +34,30 @@ ensure_stow() {
 
 backup_conflicts() {
   local pkg="$1"
-  # для каждого файла в пакете смотрим, есть ли уже такой же путь в $HOME,
-  # и если это НЕ симлинк на наш репозиторий — бэкапим перед stow
+  # для каждого файла в пакете смотрим, есть ли уже такой же путь в $HOME.
+  # ВАЖНО: сравниваем через readlink -f (реальный физический путь), а не
+  # только "является ли ПОСЛЕДНИЙ компонент симлинком" — если родительская
+  # папка (например ~/.config/btop) уже симлинк на репозиторий, то файл
+  # внутри неё физически и есть файл в репозитории; наивная проверка -L
+  # на конечный файл этого не видит и уводит его в бэкап, вынося из репы.
   while IFS= read -r -d '' src; do
     local rel="${src#"$DOTFILES_DIR"/"$pkg"/}"
     local target="$HOME/$rel"
-    if [[ -e "$target" && ! -L "$target" ]]; then
-      mkdir -p "$BACKUP_DIR/$(dirname "$rel")"
-      log "бэкаплю существующий $target -> $BACKUP_DIR/$rel"
-      mv "$target" "$BACKUP_DIR/$rel"
-    elif [[ -L "$target" && "$(readlink -f "$target")" != "$(readlink -f "$src")" ]]; then
-      # симлинк есть, но указывает не туда — тоже в бэкап
-      log "бэкаплю чужой симлинк $target -> $BACKUP_DIR/$rel"
-      mkdir -p "$BACKUP_DIR/$(dirname "$rel")"
-      mv "$target" "$BACKUP_DIR/$rel"
+
+    if [[ ! -e "$target" && ! -L "$target" ]]; then
+      continue # цели нет вообще — конфликтовать не с чем
     fi
+
+    local real_target real_src
+    real_target="$(readlink -f "$target" 2>/dev/null || true)"
+    real_src="$(readlink -f "$src")"
+    if [[ -n "$real_target" && "$real_target" == "$real_src" ]]; then
+      continue # уже верно слинковано (напрямую или через родителя) — не трогаем
+    fi
+
+    mkdir -p "$BACKUP_DIR/$(dirname "$rel")"
+    log "бэкаплю существующий $target -> $BACKUP_DIR/$rel"
+    mv "$target" "$BACKUP_DIR/$rel"
   done < <(find "$DOTFILES_DIR/$pkg" -type f -print0)
 }
 
