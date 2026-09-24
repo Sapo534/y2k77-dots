@@ -1,0 +1,29 @@
+[global]
+    width = 300
+    height = 100
+    offset = 10x10
+    origin = top-right
+    transparency = 15
+    corner_radius = 8
+    font = monospace 10
+    frame_width = 1
+    frame_color = "#444444"
+    gap_size = 5
+
+[urgency_low]
+    background = "#1a1a1a"
+    foreground = "#cccccc"
+    frame_color = "#ffffff"
+    timeout = 4
+
+[urgency_normal]
+    background = "#1a1a1a"
+    foreground = "#aaaaaa"
+    frame_color = "#555555"
+    timeout = 6
+
+[urgency_critical]
+    background = "#1a1a1a"
+    foreground = "#ff5555"
+    frame_color = "#ff5555"
+    timeout = 0
