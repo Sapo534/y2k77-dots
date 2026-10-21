@@ -1,0 +1,11 @@
+show=drun
+width=400
+height=300
+always_parse_user=true
+show_all=false
+term=foot
+hide_scroll=true
+print_command=true
+insensitive=true
+prompt=Поиск...
+columns=1
