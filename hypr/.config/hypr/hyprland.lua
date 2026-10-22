@@ -3,13 +3,14 @@
 ------------------
 
 hl.monitor({
-	output = "HDMI-A-2",
-	mode = "1920x1080@60",
+	output = "DP-2",
+	mode = "2560x1440@180",
 	position = "0x0",
 	cm = "srgb",
 	scale = 1,
 	sdrbrightness = 1,
 	sdrsaturation = 1.5,
+	vrr = 0,
 })
 
 ---------------------
@@ -25,10 +26,11 @@ local menu = "wofi --show drun"
 -------------------
 
 hl.on("hyprland.start", function()
-	hl.exec_cmd("waybar")
+	hl.exec_cmd("qs -p ~/.config/quickshell/lunar")
 	hl.exec_cmd("hyprpaper")
 	hl.exec_cmd("hyprpolkitagent")
-	hl.exec_cmd("amneziavpn")
+	hl.exec_cmd("wl-paste --type text --watch cliphist store -max-items 50")
+	hl.exec_cmd("wl-paste --type image --watch cliphist store -max-items 50")
 end)
 
 -------------------------------
@@ -160,7 +162,7 @@ hl.device({
 local mainMod = "SUPER"
 
 -- System binds and software launch
-hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("wlogout"))
+-- hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("wlogout"))
 hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + C", hl.dsp.window.close())
 hl.bind(mainMod .. " + M", hl.dsp.exit())
@@ -174,8 +176,15 @@ hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(
 	mainMod .. " + I",
 	hl.dsp.exec_cmd(
-		"grim -g \"$(slurp)\" - | tee ~/Pictures/screenshot-$(date +'%Y-%m-%d_%H-%M')-$(tr -dc A-Za-z0-9 </dev/urandom | head -c 6).png | wl-copy"
+		'grim -g "$(slurp -d)" - | satty -f - --copy-command wl-copy --output-filename ~/Pictures/Screenshots/%Y-%m-%d_%H-%M-%S.png --save-after-copy --early-exit'
 	)
+)
+
+-- Lunar Station Control Center: одиночный Super
+hl.bind(
+	"SUPER + SUPER_L",
+	hl.dsp.exec_cmd("qs -p ~/.config/quickshell/lunar ipc call lunar toggleControlCenter"),
+	{ release = true }
 )
 
 -- Focus with arrows
@@ -254,4 +263,14 @@ hl.window_rule({
 		pin = false,
 	},
 	no_focus = true,
+})
+
+-----------------
+-- WINDOWRULES --
+-----------------
+
+hl.window_rule({
+	match = { class = "^(com.gabm.satty)$" },
+	float = true,
+	center = true,
 })
