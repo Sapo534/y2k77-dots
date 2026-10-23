@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Services.SystemTray
 import Quickshell.Services.Pipewire
+import Quickshell.Services.Mpris
 
 PanelWindow {
     id: bar
@@ -18,14 +19,59 @@ PanelWindow {
 
     readonly property var tl: Hyprland.activeToplevel
     readonly property var sinkAudio: Pipewire.defaultAudioSink?.audio ?? null
+    property bool playerOpen: false
+
+    readonly property var players: Mpris.players.values
+    readonly property var player: players.find(p => p.isPlaying) ?? players[0] ?? null
+
+    onPlayerChanged: if (!player) playerOpen = false
+    onCcOpenChanged: if (ccOpen) playerOpen = false
 
     SystemClock { id: clock; precision: SystemClock.Seconds }
     PwObjectTracker { objects: Pipewire.defaultAudioSink ? [Pipewire.defaultAudioSink] : [] }
+
+    readonly property var sites: [
+        { re: /youtube|youtu\.be|ytimg/, domain: "youtube.com" },
+        { re: /spotify|scdn\.co/,        domain: "spotify.com" },
+        { re: /soundcloud|sndcdn/,       domain: "soundcloud.com" }
+    ]
+
+    function hostOf(u) {
+        const m = /^https?:\/\/([^\/:?#]+)/i.exec(u || "")
+        return m ? m[1].replace(/^www\./, "") : ""
+    }
+
+    function sourceOf(p) {
+        if (!p) return { icon: "", url: "", name: "" }
+        let host = hostOf((p.metadata ?? {})["xesam:url"])
+        if (!host) {
+            const art = (p.trackArtUrl ?? "").toLowerCase()
+            const s = sites.find(s => s.re.test(art))
+            if (s) host = s.domain
+        }
+        return {
+            icon: p.desktopEntry || (p.identity ?? "").toLowerCase(),
+            url: host ? "https://www.google.com/s2/favicons?sz=64&domain=" + host : "",
+            name: host || p.identity || ""
+        }
+    }
+
+    readonly property var source: sourceOf(player)
 
     ControlCenter {
         barWindow: bar
         open: bar.ccOpen && (!Hyprland.focusedMonitor || Hyprland.focusedMonitor.name === bar.screen?.name)
         onRequestClose: bar.requestClose()
+    }
+
+    PlayerPopup {
+      barWindow: bar
+      player: bar.player
+      open: bar.playerOpen && bar.player !== null
+      onRequestClose: bar.playerOpen = false
+      iconName: bar.source.icon
+      iconUrl: bar.source.url
+      sourceName: bar.source.name
     }
 
     Rectangle {
@@ -236,6 +282,17 @@ PanelWindow {
                 font.family: "monospace"
                 font.pixelSize: 13
                 Layout.alignment: Qt.AlignVCenter
+            }
+          }
+          PlayerButton {
+            iconName: bar.source.icon
+            iconUrl: bar.source.url
+            anchors.centerIn: parent
+            player: bar.player
+            open: bar.playerOpen
+            onClicked: {
+                if (!bar.playerOpen && bar.ccOpen) bar.requestClose()
+                bar.playerOpen = !bar.playerOpen
             }
         }
     }
