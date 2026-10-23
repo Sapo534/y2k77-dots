@@ -159,13 +159,14 @@ Flickable {
             Layout.fillWidth: true
 
             Text {
-                text: "BYPASS · IP / ПОДСЕТИ / ДОМЕНЫ"
+                Layout.fillWidth: true
+                text: "BYPASS · IP / ДОМЕНЫ"
                 color: "#777777"
                 font.family: "monospace"
                 font.letterSpacing: 1.4
                 font.pixelSize: 9
+                elide: Text.ElideRight
             }
-            Item { Layout.fillWidth: true }
             Btn {
                 label: "+ CLIPBOARD"
                 onClicked: {
