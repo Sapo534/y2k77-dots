@@ -5,15 +5,23 @@ import Quickshell.Hyprland
 import Quickshell.Services.SystemTray
 import Quickshell.Services.Pipewire
 import Quickshell.Services.Mpris
+import Quickshell.Wayland
 
 PanelWindow {
     id: bar
 
     property bool ccOpen: false
+    property bool hold: false
+    property bool clockOpen: false
+    required property var svc
     signal toggleControlCenter()
     signal requestClose()
 
     anchors { top: true; left: true; right: true }
+
+    // Без этого попапы бара не получают клавиатурный фокус и поля ввода молчат
+    WlrLayershell.keyboardFocus: (ccOpen || playerOpen || clockOpen)
+        ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
     implicitHeight: 44
     color: "#101010"
 
@@ -25,7 +33,7 @@ PanelWindow {
     readonly property var player: players.find(p => p.isPlaying) ?? players[0] ?? null
 
     onPlayerChanged: if (!player) playerOpen = false
-    onCcOpenChanged: if (ccOpen) playerOpen = false
+    onCcOpenChanged: if (ccOpen) { playerOpen = false; clockOpen = false }
 
     SystemClock { id: clock; precision: SystemClock.Seconds }
     PwObjectTracker { objects: Pipewire.defaultAudioSink ? [Pipewire.defaultAudioSink] : [] }
@@ -62,6 +70,7 @@ PanelWindow {
         barWindow: bar
         open: bar.ccOpen && (!Hyprland.focusedMonitor || Hyprland.focusedMonitor.name === bar.screen?.name)
         onRequestClose: bar.requestClose()
+        hold: bar.hold
     }
 
     PlayerPopup {
@@ -72,6 +81,15 @@ PanelWindow {
       iconName: bar.source.icon
       iconUrl: bar.source.url
       sourceName: bar.source.name
+      hold: bar.hold
+    }
+
+    ClockPopup {
+        barWindow: bar
+        svc: bar.svc
+        hold: bar.hold
+        open: bar.clockOpen
+        onRequestClose: bar.clockOpen = false
     }
 
     Rectangle {
@@ -268,20 +286,20 @@ PanelWindow {
                 }
             }
 
-            Text {
-                text: Qt.formatDateTime(clock.date, "dd MMM").toUpperCase()
-                color: "#888888"
-                font.family: "monospace"
-                font.pixelSize: 11
+            // Дата + время одной кнопкой: клик = меню (календарь / часы)
+            ClockButton {
                 Layout.alignment: Qt.AlignVCenter
-            }
-
-            Text {
-                text: Qt.formatDateTime(clock.date, "HH:mm:ss")
-                color: "#ffffff"
-                font.family: "monospace"
-                font.pixelSize: 13
-                Layout.alignment: Qt.AlignVCenter
+                svc: bar.svc
+                now: clock.date
+                open: bar.clockOpen
+                onClicked: {
+                    if (bar.svc.ringing) { bar.svc.dismiss(); return }
+                    if (!bar.clockOpen) {
+                        if (bar.ccOpen) bar.requestClose()
+                        bar.playerOpen = false
+                    }
+                    bar.clockOpen = !bar.clockOpen
+                }
             }
           }
           PlayerButton {
@@ -292,6 +310,7 @@ PanelWindow {
             open: bar.playerOpen
             onClicked: {
                 if (!bar.playerOpen && bar.ccOpen) bar.requestClose()
+                bar.clockOpen = false
                 bar.playerOpen = !bar.playerOpen
             }
         }

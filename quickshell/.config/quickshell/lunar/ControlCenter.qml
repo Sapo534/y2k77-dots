@@ -10,6 +10,7 @@ PopupWindow {
 
     required property var barWindow
     property bool open: false
+    property bool hold: false   // true на время скриншота
     property int tab: 0
     property bool hasBacklight: false
     property int brightness: 50
@@ -32,7 +33,7 @@ PopupWindow {
     // delete this block and set grabFocus: true instead.
     HyprlandFocusGrab {
         windows: [cc, cc.barWindow]
-        active: cc.open
+        active: cc.open && !cc.hold
         onCleared: cc.requestClose()
     }
 

@@ -9,6 +9,7 @@ PopupWindow {
     required property var barWindow
     property var player: null
     property bool open: false
+    property bool hold: false   // true на время скриншота
     signal requestClose()
 
     property string iconName: ""
@@ -54,7 +55,7 @@ PopupWindow {
 
     HyprlandFocusGrab {
         windows: [pp, pp.barWindow]
-        active: pp.open
+        active: pp.open && !pp.hold
         onCleared: pp.requestClose()
     }
 
