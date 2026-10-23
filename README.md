@@ -13,7 +13,7 @@ My personal Hyprland dotfiles for Arch Linux (not Void, there is no Hyprland xD)
 - Terminal: Kitty
 - Shell: Fish
 - Launcher: Wofi
-- Bar: Waybar
+- Bar, shell: Quickshell (Lunar)
 - System Info: Fastfetch
 
 ## 🎨 Theme & Wallpaper
