@@ -172,11 +172,19 @@ hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 
--- Screenshot (Copies to clipboard and saves to Pictures)
+-- satty: floating window, not too big
+hl.window_rule({
+	match = { class = "com.gabm.satty" },
+	float = true,
+	size = { "monitor_w * 0.7", "monitor_h * 0.7" },
+	center = true,
+})
+
+-- hold/release: lunar menu dont close, when slurp keeps follow_mouse
 hl.bind(
 	mainMod .. " + I",
 	hl.dsp.exec_cmd(
-		'grim -g "$(slurp -d)" - | satty -f - --copy-command wl-copy --output-filename ~/Pictures/Screenshots/%Y-%m-%d_%H-%M-%S.png --save-after-copy --early-exit'
+		[[sh -c 'qs -c lunar ipc call lunar hold; g="$(slurp -d)"; qs -c lunar ipc call lunar release; [ -n "$g" ] && grim -g "$g" - | satty -f - --copy-command wl-copy --output-filename ~/Pictures/Screenshots/%Y-%m-%d_%H-%M-%S.png --save-after-copy --early-exit']]
 	)
 )
 
