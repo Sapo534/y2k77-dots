@@ -67,6 +67,7 @@ PanelWindow {
     readonly property var source: sourceOf(player)
 
     ControlCenter {
+        id: cc
         barWindow: bar
         open: bar.ccOpen && (!Hyprland.focusedMonitor || Hyprland.focusedMonitor.name === bar.screen?.name)
         onRequestClose: bar.requestClose()
@@ -243,7 +244,11 @@ PanelWindow {
                     }
                 }
             }
-
+            BarStats {
+                Layout.alignment: Qt.AlignVCenter
+                open: cc.open && cc.tab === 5
+                onClicked: bar.toggleMonitor()
+            }
             // Control center button: click = open, wheel = volume, middle = mute
             Rectangle {
                 Layout.alignment: Qt.AlignVCenter

@@ -21,7 +21,7 @@ PopupWindow {
     anchor.rect.x: barWindow.width - width - 12
     anchor.rect.y: barWindow.height + 8
 
-    implicitWidth: 400
+    implicitWidth: 440
     implicitHeight: 560
     visible: open || card.opacity > 0.01   // keep alive for the fade-out
     color: "transparent"
@@ -113,7 +113,8 @@ PopupWindow {
                 Btn { label: "NETWORK"; active: cc.tab === 1; onClicked: cc.tab = 1 }
                 Btn { label: "BLUETOOTH"; visible: cc.hasBt; active: cc.tab === 2; onClicked: cc.tab = 2 }
                 Btn { label: "VPN"; active: cc.tab === 3; onClicked: cc.tab = 3 }
-Btn { label: "POWER"; active: cc.tab === 4; onClicked: cc.tab = 4 }
+                Btn { label: "MONITOR"; active: cc.tab === 5; onClicked: cc.tab = 5 }
+                Btn { label: "POWER"; active: cc.tab === 4; onClicked: cc.tab = 4 }
                 Item { Layout.fillWidth: true }
             }
 
@@ -124,11 +125,12 @@ Btn { label: "POWER"; active: cc.tab === 4; onClicked: cc.tab = 4 }
                 Layout.fillHeight: true
                 currentIndex: cc.tab
 
-                AudioPage { }
+                AudioPage {}
                 NetworkPage { active: cc.open && cc.tab === 1 }
                 BluetoothPage { }
                 VpnPage { active: cc.open && cc.tab === 3 }
-PowerPage { active: cc.open && cc.tab === 4 }
+                PowerPage { active: cc.open && cc.tab === 4 }
+                MonitorPage { active: cc.open && cc.tab === 5 }
             }
 
             Rectangle { Layout.fillWidth: true; height: 1; color: "#292929"; visible: cc.hasBacklight }
