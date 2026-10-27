@@ -171,6 +171,16 @@ hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
+hl.bind(mainMod .. " + period", hl.dsp.exec_cmd("hypremoji"))
+
+-- hypremoji: small floating window
+hl.window_rule({
+	name = "hypremoji-small",
+	match = { class = "(?i).*hypremoji.*" },
+	float = true,
+	size = { 360, 420 },
+	center = true,
+})
 
 -- satty: floating window, not too big
 hl.window_rule({
@@ -276,9 +286,3 @@ hl.window_rule({
 -----------------
 -- WINDOWRULES --
 -----------------
-
-hl.window_rule({
-	match = { class = "^(com.gabm.satty)$" },
-	float = true,
-	center = true,
-})
