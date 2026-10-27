@@ -1,7 +1,7 @@
 # Тема: Lunar Station (по арту)
 # Основные цвета: черный, белый, серый, оранжевый
 
-theme[main_bg]="#0a0a0a"
+theme[main_bg]=""
 theme[main_fg]="#e0e0e0"
 
 theme[title]="#ffffff"
